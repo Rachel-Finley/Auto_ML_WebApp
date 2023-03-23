@@ -1,7 +1,9 @@
+# Dependencies to install
+# Streamlit, pycaret, pandas, ydata_profiling, streamlit_pandas_profiling, and base 64
 
+# Main libs
 import streamlit as st
 import pandas as pd
-
 import os
 
 # adding profiling functionality
@@ -21,10 +23,6 @@ from pycaret.classification import setup as c_setup
 from pycaret.classification import compare_models as c_compare_models
 from pycaret.classification import pull as c_pull
 from pycaret.classification import save_model as c_save
-
-# Chatbot
-import openai
-from streamlit_chat import message
 
 # base64 library to be able to use urls
 import base64
@@ -112,7 +110,6 @@ if choice == "Modelling":
         best_model
         c_save(best_model, "best_model")
 
-# Get Chat GPT to make commentary about model outcomes
 if choice == "Download Model":
     with open("best_model.pkl", 'rb') as f:
         st.download_button("Download the trained pycaret Model", f, "trained_model.pkl")
