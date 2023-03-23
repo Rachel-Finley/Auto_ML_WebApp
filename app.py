@@ -27,7 +27,7 @@ from pycaret.classification import save_model as c_save
 # base64 library to be able to use urls
 import base64
 
-
+# Sets the background of the website
 def set_bg(main_bg):
     main_bg_ext = "jpg"
 
@@ -42,29 +42,17 @@ def set_bg(main_bg):
         """,
         unsafe_allow_html=True
         )
-
-
 set_bg('pxfuel.jpg')
 
 
-def generate_model_review(model_data):
-    completions = openai.Completion.create(
-        engine = 'text-davinci-003',
-        prompt = f"Analyze the following ML model's performance: \n {model_data}",
-        max_tokens = 1024,
-        n = 1,
-        stope = None,
-        temparature = .5
-    )
-
-
+# Main Menu for the application
 with st.sidebar:
     st.image("Dalle-image.png")
     st.title("automated ML pipeline")
     choice = st.radio("Menu", ["Upload Dataset", "Exploratory Data Analysis", "Modelling", "Download Model"])
     st.info("A customizable, automated ML pipeline.")
 
-
+# Read in user's Dataset, store Dataset if already been uploaded.
 if os.path.exists("data.csv"):
     df = pd.read_csv("data.csv", index_col = None)
 
@@ -76,16 +64,19 @@ if choice == "Upload Dataset":
         df.to_csv("data.csv", index = None)
         st.dataframe(df)
 
-
+# Perform EDA on the user's Dataset
 if choice == "Exploratory Data Analysis":
     st.title("Automated Exploratory Data Analysis")
     profile_report = df.profile_report()
     st_profile_report(profile_report)
 
+# Let User select Target Variable, and type of ML Problem
+# Train/ run model, show cross validated model comparison
 if choice == "Modelling":
     st.title("Training and Test ML models")
     target = st.selectbox("Select your label", df.columns)
     model_type = st.radio("Select Model Type", ["Regression", "Classification"])
+    
     if model_type == "Regression":
         r_setup(df, target = target)
         setup_df = r_pull()
@@ -110,6 +101,7 @@ if choice == "Modelling":
         best_model
         c_save(best_model, "best_model")
 
+# Functionality to download the model and its hyperparams for later usage.
 if choice == "Download Model":
     with open("best_model.pkl", 'rb') as f:
         st.download_button("Download the trained pycaret Model", f, "trained_model.pkl")
